@@ -1,0 +1,32 @@
+.CCH-MSGS {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    /*background-color: rgba(0, 0, 0, 0.5);*/
+    z-index: 1000;
+    text-align: center;
+    .msgs-content {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 12px 25px;
+        text-align: center;
+        background-color: rgba(0, 0, 0, .6);
+        color: #fff;
+        position: relative;
+        line-height: 24px;
+        word-break: break-all;
+        font-size: 14px;
+        overflow: auto;
+        border-radius: 2px;
+        max-width: 360px;
+    }
+    &:after {
+        content: "";
+        display: inline-block;
+        vertical-align: middle;
+        width: 0;
+        height: 100%;
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "cchtrip",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "yy-fe": "^1.4.2"
+  },
+  "devDependencies": {
+    "gulp": "github:gulpjs/gulp#4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://172.16.17.222:40099/yuemenglong/cchtrip.git"
+  },
+  "author": "",
+  "license": "ISC"
+}

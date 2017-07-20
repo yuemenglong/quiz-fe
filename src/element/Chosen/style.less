@@ -1,0 +1,99 @@
+.cch-chosen {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    div{
+        margin: 0px !important;
+    }
+    .div-select {
+        background-color: #fff;
+        border: solid 1px #999;
+        height: 25px;
+        width: 100%;
+        cursor: pointer;
+        position: relative;
+    }
+    .div-select-text {
+        height: 100%;
+        width: 100%;
+        word-break: keep-all;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .div-select-text input {
+        border: none;
+        width: 100% !important;
+        height: 100%;
+        padding-left: 5px;
+        padding-right: 25px;
+    }
+    .div-select-text input:focus {
+        outline: none;
+    }
+    .div-select-arrow {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 25px;
+        height: 100%;
+        color: #999;
+        cursor: pointer;
+        text-align: center;
+        border-left: 1px solid #999;
+        background-color: #f2f2f2;
+    }
+    .div-select-arrow > div {
+        font-size: 12px;
+        position: absolute;
+/*        top: 3px;
+        left: 0;*/
+        top: 5px;
+        bottom: 0;
+        height: 14px;
+        margin: auto;
+        left: 0;
+        right: 0;
+        color: #000;
+    }
+    .div-select-arrow:hover {
+        background-color: #817d7e;
+    }
+    .div-select-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        border: solid 1px #999;
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 9100;
+    }
+    .div-select-list .div-select-item:nth-child(2n+1) {
+        background-color: #fff;
+    }
+    .div-select-item {
+        padding-left: 5px;
+        height: 30px;
+        line-height: 30px;
+        background-color: #f2f2f2;
+        /*word-break: keep-all;*/
+        overflow: hidden;
+        cursor: pointer;
+        &:hover {
+            background-color: #c0d9ef!important;
+        }
+    }
+    .div-select-selected {
+        background-color: #619dd0 !important;
+    }
+
+    .div-select-first {
+        background-color: #c0d9ef !important;
+    }
+    .show {
+        display: "block";
+    }
+    .hide {
+        display: "none";
+    }
+}

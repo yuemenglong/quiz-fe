@@ -1,0 +1,10 @@
+node_modules
+build
+bundle
+dist
+jade
+logs
+static
+temp
+test.js
+.swp

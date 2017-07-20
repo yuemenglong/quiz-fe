@@ -1,0 +1,74 @@
+.cch-modal {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgmAkAAJwAmsoF3fMAAAAASUVORK5CYII=");
+    z-index: 1000;
+    text-align: center;
+    .modal-content {
+        display: inline-block;
+        vertical-align: middle;
+        background-color: #fff;
+        text-align: left;
+        .modal-header {
+            padding: 7px 10px 5px 10px;
+            position: relative;
+            border-bottom: 1px solid #e2e2e2;
+            text-align: left;
+            background-color: #efefef;
+            .modal-title {
+                color: #000;
+                font-size: 13px;
+                line-height: 17px;
+                padding-right: 30px;
+                min-height: 12px;
+                font-family: "\5B8B\4F53";
+                font-weight: bold;
+            }
+            .btn-close {
+                position: absolute;
+                top: 0;
+                right: 10px;
+                bottom: 0;
+                height: 20px;
+                width: 20px;
+                text-align: center;
+                padding: 0;
+                margin: auto;
+                background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAXklEQVQoU2P8////BgYGhgZGRsYLDHjA////DRgYGAoYoQyQpgBcmlDUgAzFpwldjhHmCmyasInBNaDbBDUIw6koGpA0bYNq8EL3F2UakN1M0EkkeZqkYCU54khNGgDwJGGhAr3tCgAAAABJRU5ErkJggg==");
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+        }
+        .modal-body {
+            padding: 5px 10px 5px 10px;
+            min-height: 45px;
+            min-width: 175px;
+            max-width: 900px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .modal-footer {
+            padding: 5px 10px 5px 10px;
+            text-align: right;
+            border-top: 1px solid #e5e5e5;
+            button.btn {
+                padding: 5px 10px;
+                font-family: serif;
+                margin-left: 5px;
+                line-height: 12px;
+                font-size: 12px;
+                margin-left: 5px;
+            }
+        }
+    }
+    &:after {
+        content: "";
+        display: inline-block;
+        vertical-align: middle;
+        width: 0;
+        height: 100%;
+    }
+}

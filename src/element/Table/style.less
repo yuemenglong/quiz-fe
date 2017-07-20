@@ -1,0 +1,28 @@
+.cch-justify {
+    text-align: center;
+    display: table-cell;
+    width: 1%;
+}
+
+.cch-table {
+    text-align: center;
+    th {
+        text-align: center;
+    }
+    &>thead>tr>th {
+        // text-align: center;
+        vertical-align: middle;
+    }
+    &>tbody>tr>td {
+        vertical-align: middle;
+    }
+    & & {
+        tr th {
+            border-bottom: 0px;
+        }
+        tr td {
+            border-top: 0px;
+        }
+    }
+    margin-bottom: 0px;
+}
