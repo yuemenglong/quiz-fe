@@ -31,17 +31,37 @@ app.use(bodyParser.json());
 app.use(loggerMiddleware());
 app.use(errorMiddleware());
 
+app.ajaxGet = function(url, fn){
+    return app.use(url, function(req, res, next){
+        if(req.xhr){
+            return fn(req, res)
+        }else{
+            return next()
+        }
+    })
+}
+
 process.on("uncaughtException", function(err) {
     logger.error(JSON.stringify(err.stack));
 });
 
-app.get("/", function(req, res){
+app.ajaxGet("/quiz", transmit)
+
+app.ajaxGet("/quiz/:id", transmit)
+
+app.post("/quiz", transmit)
+
+app.ajaxGet("/quiz/:id/questions", transmit)
+
+app.ajaxGet("/question/:id", transmit)
+
+app.put("/quiz/:id", transmit)
+
+app.put("/quiz/:id/question/:qid", transmit)
+
+app.get("/*", function(req, res){
     res.render("App")
 })
-
-app.get("/quiz", transmit)
-
-app.post("/quiz/:id/question/:qid", transmit)
 
 app.listen(conf.port, function(err) {
     if (err) {

@@ -89,30 +89,30 @@ exports.decodeObject = function(str) {
     return obj;
 }
 
-function encodeObject(obj, res, prefix) {
-    if (obj == null) {
-        var kv = prefix + "=";
-        res.push(kv)
-    } else if (_.isArray(obj)) {
-        obj.map(function(item, i) {
-            var path = prefix + "[" + i + "]";
-            encodeObject(item, res, path)
-        })
-    } else if (typeof obj == "object") {
-        _(obj).keys().map(function(key) {
-            var value = obj[key]
-            var path = prefix ? prefix + "." + key : key
-            encodeObject(value, res, path)
-        }).value()
-    } else {
-        var kv = prefix + "=" + obj;
-        res.push(kv)
-    }
-}
 exports.encodeObject = function(obj) {
+    function go(obj, res, prefix) {
+        if (obj == null) {
+            var kv = prefix + "=";
+            res.push(kv)
+        } else if (_.isArray(obj)) {
+            obj.map(function(item, i) {
+                var path = prefix + "[" + i + "]";
+                go(item, res, path)
+            })
+        } else if (typeof obj == "object") {
+            _(obj).keys().map(function(key) {
+                var value = obj[key]
+                var path = prefix ? prefix + "." + key : key
+                go(value, res, path)
+            }).value()
+        } else {
+            var kv = prefix + "=" + obj;
+            res.push(kv)
+        }
+    }
     var res = [];
     var prefix = "";
-    encodeObject(obj, res, prefix);
+    go(obj, res, prefix);
     return res.join("&");
 }
 
@@ -137,8 +137,22 @@ exports.debug = function() {
 
 }
 
-if (require.main == module) {
-    var url = "continentID=18&countryID=334&stateID=495&cityID=14434&checkOutDate=2017-06-11&checkInDate=2017-06-10&destinationID=7263&roomsInformation.roomInfo[0].adultNum=2&roomsInformation.roomInfo[0].childNum=2&roomsInformation.roomInfo[0].childAges.childAge[0].age=10&roomsInformation.roomInfo[0].childAges.childAge[1].age=5&roomsInformation.roomInfo[1].adultNum=4&roomsInformation.roomInfo[1].childNum=1&roomsInformation.roomInfo[1].childAges.childAge[0].age=12";
-    var res = exports.decodeObject(url)
-    console.log(JSON.stringify(res, null, 2));
+exports.replaceBy = function(arr, obj, key) {
+    return arr.map(function(item) {
+        if (item[key] == obj[key]) {
+            return obj
+        } else {
+            return item
+        }
+    })
+}
+
+exports.defaultsBy = function(arr, obj, key) {
+    return arr.map(function(item) {
+        if (item[key] == obj[key]) {
+            return _.defaults(obj, item)
+        } else {
+            return item
+        }
+    })
 }
