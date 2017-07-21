@@ -1,6 +1,6 @@
 var _ = require("lodash");
-// var Alert = require("/element/Alert");
-// var Loading = require("/element/Loading");
+var Alert = require("/element/Alert");
+var Loading = require("/element/Loading");
 
 exports.debug = function() {
 

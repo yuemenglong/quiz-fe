@@ -41,6 +41,8 @@ app.get("/", function(req, res){
 
 app.get("/quiz", transmit)
 
+app.post("/quiz/:id/question/:qid", transmit)
+
 app.listen(conf.port, function(err) {
     if (err) {
         logger.error(JSON.stringify(err));
