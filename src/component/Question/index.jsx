@@ -8,61 +8,99 @@ var Route = ReactRouter.Route;
 var browserHistory = ReactRouter.browserHistory;
 var IndexRoute = ReactRouter.IndexRoute;
 var Link = ReactRouter.Link;
+require("./style.less")
 
 function QuestionClass() {
     this.getDefaultProps = function() {
-        return { question: null, idx: null }
+        return { question: null, type: "normal" }
     }
     this.getInitialState = function() {
-        var that = this;
-        return { answers: _.get(this.props.question, "answser", []) }
+        return { answers: _.get(this.props.question, "answer", "").split("") }
     }
     this.renderTitle = function() {
         var type = this.props.question.info.multi ? "多选题" : "单选题"
         return [
-            jade(`h1(key="type") {this.props.idx}.{type}`),
+            jade(`h1(key="type") {this.props.question._idx}.{type}`),
             jade(`h1(key="title") {this.props.question.info.title}`),
         ]
     }
     this.submitAnswer = function(answer) {
+        this.setState({ answers: [] })
         this.props.onSubmit && this.props.onSubmit(answer)
     }
     this.onChoose = function(answer) {
-        if (!this.props.question.info.multi) {
+        if (!this.isNormal()) {
+            return
+        }
+        if (!this.isMulti()) {
             this.submitAnswer(answer)
         } else {
-            if (this.props.answers.indexOf(answer) >= 0) {
-                var answers = this.props.answers.filter(function(c) {
+            if (this.state.answers.indexOf(answer) >= 0) {
+                var answers = this.state.answers.filter(function(c) {
                     return c != answer
                 })
             } else {
-                var answers = this.props.answers.concat([answer]).sort()
+                var answers = this.state.answers.concat([answer]).sort()
             }
             this.setState({ answers: answers })
         }
     }
+    this.isReview = function() {
+        return this.props.type == "review"
+    }
+    this.isNormal = function() {
+        return this.props.type == "normal"
+    }
+    this.isMulti = function() {
+        return this.props.question.info.multi
+    }
     this.renderChoose = function() {
-        return ["a", "b", "c", "d"].map(function(no) {
+        function choosePoint(no) {
+            if (this.isNormal()) {
+                var userAnswer = this.state.answers.join("")
+            } else if (this.isReview()) {
+                var userAnswer = _.get(this.props.question, "answer", "")
+            }
+            if (userAnswer.indexOf(no) >= 0) {
+                return jade(`span(className="choose-point")`)
+            }
+        }
+
+        var normals = ["a", "b", "c", "d"].map(function(no) {
             var choose = this.props.question.info[no]
+            if (this.isReview() && this.props.question.info.answer.indexOf(no) >= 0) {
+                var className = "btn btn-success"
+            } else if (this.isReview()) {
+                var className = "btn btn-default disabled"
+            } else {
+                var className = "btn btn-default"
+            }
             return jade(`
-            div(key={no}) 
+            div(className="choose" key={this.props.question.id + no})
                 span {no.toUpperCase()}
-                button(onClick={this.onChoose.bind(null, no)}) {choose}`)
+                button(className={className} onClick={this.onChoose.bind(null, no)}) {choose}
+                |{choosePoint.call(this, no)}`)
         }.bind(this))
+        var skip = jade(`
+            div(className="choose" key={this.props.question.id +"skip"})
+                span
+                button(className="btn btn-default" onClick={this.onChoose.bind(null, "")}) 跳过`)
+        if (!this.props.question.info.multi && this.props.type == "normal") {
+            return normals.concat([skip])
+        } else {
+            return normals
+        }
     }
     this.onClickSubmit = function() {
-        this.submitAnswer(answer)
+        this.submitAnswer(this.state.answers.join(""))
     }
-    this.renderMultiInfo = function() {
-        if (!this.props.question.info.multi) {
+    this.renderMultiSubmit = function() {
+        if (!this.props.question.info.multi || this.props.type != "normal") {
             return
         }
         return [
-            jade(`button(key="submit" onClick={this.onClickSubmit}) 确定`),
+            jade(`button(className="btn btn-primary" key="submit" onClick={this.onClickSubmit}) 确定`),
         ]
-    }
-    this.renderAnswer = function() {
-        return jade(`h4(key="answer") 你的选择：{this.props.answers}`)
     }
     this.renderQuestion = function() {
         if (!this.props.question) {
@@ -71,11 +109,11 @@ function QuestionClass() {
         return [
             this.renderTitle(),
             this.renderChoose(),
-            this.renderAnswer(),
-            this.renderMultiInfo()
+            this.renderMultiSubmit()
         ]
     }
     this.render = function() {
+        console.log(this.state, this.props)
         return jade(`
         div
             |{this.renderQuestion()}

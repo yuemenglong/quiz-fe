@@ -18,8 +18,19 @@ function QuizResultClass() {
         var quizId = this.props.location.pathname.split("/").slice(-2)[0]
         return { quiz: this.fetch("quiz", `/quiz/${quizId}`) || null, quizId: quizId }
     }
-    this.onClick = function() {
+    this.gotoReview = function() {
         browserHistory.push(`/quiz/${this.state.quizId}/review`)
+    }
+    this.gotoNextQuiz = function() {
+        ev.clearFetch("quiz")
+        browserHistory.push(`/`)
+    }
+    this.renderButton = function(fail) {
+        if (fail) {
+            return jade(`button(onClick={this.gotoReview}) 查看错误题目`)
+        } else {
+            return jade(`button(onClick={this.gotoNextQuiz}) 下一次考试`)
+        }
     }
     this.renderResult = function() {
         if (!this.state.quiz.finished) {
@@ -39,12 +50,19 @@ function QuizResultClass() {
     }
     this.render = function() {
         console.log(this.state)
-        if (!this.state.quiz) {
+        if (!this.state.quiz || !this.state.quiz.finished) {
             return jade(`div`)
         }
+        var succ = this.state.quiz.questions.filter(function(q) {
+            return q.correct == true
+        }).length
+        var fail = this.state.quiz.questions.filter(function(q) {
+            return q.correct == false
+        }).length
         return jade(`
         div
-            |{this.renderResult()}
+            h5 正确{succ}，错误{fail}
+            |{this.renderButton(fail)}
         `)
     }
 }

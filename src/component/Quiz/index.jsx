@@ -8,20 +8,38 @@ var kit = require("/common/kit")
 
 function QuizClass() {
     this.fetch = ev.createFetch();
+    this.getInitialState = function() {
+        var quizId = this.props.location.pathname.split("/").slice(-1)[0]
+        var reAnswer = this.props.location.query.reanswer == 1
+        return {
+            quizId: quizId,
+            quiz: this.fetch("quiz", `/quiz/${quizId}`, this.fetchNextQuestion) || {},
+            question: null,
+            idx: null,
+            reAnswer: reAnswer,
+            answeredIds: [],
+        }
+    }
     this.fetchNextQuestion = function() {
-        var question = _.find(this.state.quiz.questions, function(q) {
-            return q.answer == null
-        })
+        if (!this.state.reAnswer) {
+            var question = _.find(this.state.quiz.questions, function(q) {
+                return q.answer == null
+            })
+        } else {
+            var question = _.find(this.state.quiz.questions, function(q) {
+                return q.correct == false && this.state.answeredIds.indexOf(q.id) < 0
+            }.bind(this))
+        }
         var idx = _.indexOf(this.state.quiz.questions, question)
         var quizId = this.state.quizId;
         if (question == null) {
             var quiz = _.defaults({ finished: true }, this.state.quiz)
             ev.updateFetch("quiz", quiz)
             kit.ajax({
-                url:`/quiz/${quizId}`,
-                type:"PUT",
-                data:JSON.stringify({finished:true}),
-                success:function(){
+                url: `/quiz/${quizId}`,
+                type: "PUT",
+                data: JSON.stringify({ finished: true }),
+                success: function() {
                     browserHistory.push(`/quiz/${quizId}/result`)
                 }
             })
@@ -39,15 +57,6 @@ function QuizClass() {
         })
         return question
     }
-    this.getInitialState = function() {
-        var quizId = this.props.location.pathname.split("/").slice(-1)[0]
-        return {
-            quizId: quizId,
-            quiz: this.fetch("quiz", `/quiz/${quizId}`, this.fetchNextQuestion) || {},
-            question: null,
-            idx: null,
-        }
-    }
     this.onAnswer = function(answer) {
         kit.ajax({
             url: `/quiz/${this.state.quizId}/question/${this.state.question.id}`,
@@ -56,7 +65,8 @@ function QuizClass() {
             success: function(question) {
                 var quiz = _.clone(this.state.quiz)
                 quiz.questions = kit.defaultsBy(quiz.questions, question, "id")
-                this.setState({ quiz: quiz })
+                var answeredIds = this.state.answeredIds.concat([question.id])
+                this.setState({ quiz: quiz, answeredIds: answeredIds })
                 this.fetchNextQuestion()
             }.bind(this)
         })

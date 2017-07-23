@@ -14,9 +14,11 @@ var Quiz = require("/component/Quiz");
 var QuizResult = require("/component/QuizResult");
 var QuizReview= require("/component/QuizReview");
 
+require("bootstrap")
+
 function AppClass(){
     this.render = function(){
-        return this.props.children;
+    	return jade(`div(className="container") {this.props.children}`)
     }
 }
 

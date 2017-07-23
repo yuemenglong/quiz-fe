@@ -12,21 +12,31 @@ var kit = require("/common/kit");
 var Index = require("/component/Index");
 var Quiz = require("/component/Quiz");
 var Question = require("/component/Question");
+require("./style.less")
 
 function QuizReview() {
     this.fetch = ev.createFetch();
     this.getInitialState = function() {
+        console.log(this.props);
         var quizId = this.props.location.pathname.split("/").slice(-2)[0]
         return {
-            quiz: this.fetch("quiz", `/quiz/${quizId}`, this.fetchQuestion) || null,
+            quiz: this.fetch("quiz", `/quiz/${quizId}`, this.fetchNext) || null,
+            quizId: quizId,
             questionId: 0,
             question: null,
+            reAnswer: false,
         }
     }
-    this.fetchQuestion = function() {
+    this.renderCheckReAnswer = function() {
+
+    }
+    this.fetchNext = function() {
         var question = _.find(this.state.quiz.questions, function(q) {
             return q.id > this.state.questionId && q.correct == false
         }.bind(this))
+        if (!question) {
+            return this.setState({ question: null, reAnswer: true })
+        }
         if (question.info) {
             this.setState({ question: question, questionId: question.id })
             return;
@@ -35,26 +45,37 @@ function QuizReview() {
             url: `/question/${question.infoId}`,
             success: function(info) {
                 var quiz = _.clone(this.state.quiz);
-                var question = _.defaults({ info: info }, question)
-                quiz.questions = kit.replaceBy(quiz.questions, question, "id")
-                this.setState({ quiz: quiz, question: question, questionId: question.id })
+                var newQuestion = _.defaults({ info: info }, question)
+                quiz.questions = kit.replaceBy(quiz.questions, newQuestion, "id")
+                this.setState({ quiz: quiz, question: newQuestion, questionId: newQuestion.id })
             }.bind(this)
         })
     }
-    this.renderQuestion = function() {
-        if (!this.state.question) {
-            return jade("div")
-        }
-        return jade(`Question(question={this.state.question})`)
+    this.reAnswer = function() {
+        browserHistory.push(`/quiz/${this.state.quizId}?reanswer=1`)
     }
-    this.render = function() {
-        console.log(this.state)
-        if (!this.state.quiz) {
+    this.renderReAnswer = function() {
+        if (!this.state.reAnswer) {
+            return;
+        }
+        return jade(`button(className="btn btn-primary" onClick={this.reAnswer}) 重新答错误题目`)
+    }
+    this.renderQuestion = function() {
+        if (!this.state.quiz || !this.state.question) {
             return jade(`div`)
         }
         return jade(`
+        div(className="review-op")
+            Question(question={this.state.question} type="review")
+            button(className="btn btn-primary" onClick={this.fetchNext}) 下一题
+        `)
+    }
+    this.render = function() {
+        console.log(this.state)
+        return jade(`
         div
             |{this.renderQuestion()}
+            |{this.renderReAnswer()}
         `)
     }
 }
